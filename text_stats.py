@@ -6,11 +6,13 @@ import re
 from collections import Counter
 
 
-def word_frequency(text: str, top_n: int = 20) -> dict:
+def word_frequency(text: str, top_n: int = 20, stop_words: List = None) -> dict:
     """
     Возвращает словарь {слово: частота} для top_n самых частотных слов.
     Слова приводятся к нижнему регистру, удаляется базовая пунктуация.
     """
+    if stop_words is None:
+        stop_words = []
     cleaned = re.sub(r"[^\w\s]", "", text, flags=re.UNICODE)
     words = cleaned.lower().split()
     counter = Counter(words)
@@ -56,7 +58,8 @@ def main():
         print(f"Не удалось сохранить JSON: {e}")
 
     # Сохранение частотности
-    freq = word_frequency(text, top_n=20)
+    russian_stopwords = ["и", "в", "не", "на", "что", "как", "по", "из", "от", "за", "но", "с", "то", "а", "это"]
+    freq = word_frequency(text, top_n=20, stop_words=russian_stopwords)
     freq_filename = filepath.replace(".txt", "_freq.json")
     try:
         with open(freq_filename, "w", encoding="utf-8") as freq_f:
